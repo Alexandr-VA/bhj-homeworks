@@ -17,18 +17,30 @@ class Game {
   }
 
   registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода символа вызываем this.success()
-      При неправильном вводе символа - this.fail();
-      DOM-элемент текущего символа находится в свойстве this.currentSymbol.
-     */
+    document.addEventListener('keydown', (event) => {
+      // Игнорируем нажатия служебных клавиш (не печатных символов)
+      if (event.key.length !== 1) return;
+
+      // Предотвращаем возможные действия браузера (например, открытие меню по Alt)
+      event.preventDefault();
+
+      // Получаем ожидаемый символ из текущего элемента
+      const expectedChar = this.currentSymbol.textContent;
+      const actualChar = event.key;
+
+      // Сравниваем без учёта регистра
+      if (expectedChar.toLowerCase() === actualChar.toLowerCase()) {
+        this.success();
+      } else {
+        this.fail();
+      }
+    });
   }
 
   success() {
-    if(this.currentSymbol.classList.contains("symbol_current")) this.currentSymbol.classList.remove("symbol_current");
+    if (this.currentSymbol.classList.contains("symbol_current")) {
+      this.currentSymbol.classList.remove("symbol_current");
+    }
     this.currentSymbol.classList.add('symbol_correct');
     this.currentSymbol = this.currentSymbol.nextElementSibling;
 
@@ -45,7 +57,8 @@ class Game {
   }
 
   fail() {
-    if (++this.lossElement.textContent === 5) {
+    // По условию игры поражение наступает после 3 ошибок
+    if (++this.lossElement.textContent === 3) {
       alert('Вы проиграли!');
       this.reset();
     }
@@ -54,7 +67,6 @@ class Game {
 
   setNewWord() {
     const word = this.getWord();
-
     this.renderWord(word);
   }
 
@@ -70,7 +82,13 @@ class Game {
         'popcorn',
         'cinema',
         'love',
-        'javascript'
+        'javascript',
+        'browser',
+        'keysolo',
+        'readme',
+        'cookie-clicker',
+        'gif',
+        'finish'
       ],
       index = Math.floor(Math.random() * words.length);
 
@@ -90,5 +108,4 @@ class Game {
   }
 }
 
-new Game(document.getElementById('game'))
-
+new Game(document.getElementById('game'));
